@@ -1829,22 +1829,67 @@ function toggleFAQ(el) {
   if (!wasOpen) item.classList.add('open');
 }
 
-function submitForm() {
+async function submitForm() {
   const name = document.getElementById('f-name').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
   const service = document.getElementById('f-service').value;
+  const message = document.getElementById('f-msg') ? document.getElementById('f-msg').value.trim() : '';
+
   if (!name || !phone || !service) {
     alert('Please fill in Name, Mobile Number, and Service Required.');
     return;
   }
-  document.getElementById('form-success').style.display = 'block';
-  // Open WhatsApp with pre-filled message
-  const msg = encodeURIComponent(`Hello, I need help with passport application.\n\nName: ${name}\nPhone: ${phone}\nService: ${service}`);
-  setTimeout(() => { window.open(`https://wa.me/917978043449?text=${msg}`, '_blank'); }, 600);
+
+  // Disable button to prevent double submit
+  const btn = document.querySelector('.submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  // Send to email via Web3Forms
+  const formData = new FormData();
+  formData.append('access_key', '008a59a8-1877-4afc-b198-dd8bf38a8923');
+  formData.append('subject', 'New Passport Enquiry from e-filling.in');
+  formData.append('from_name', 'e-filling.in Website');
+  formData.append('Name', name);
+  formData.append('Phone', phone);
+  formData.append('Service', service);
+  formData.append('Message', message || 'No message provided');
+
+  try {
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await response.json();
+    if (data.success) {
+      document.getElementById('form-success').style.display = 'block';
+      // Open WhatsApp with pre-filled message
+      const msg = encodeURIComponent(`Hello, I need help with passport application.\n\nName: ${name}\nPhone: ${phone}\nService: ${service}${message ? '\nMessage: ' + message : ''}`);
+      setTimeout(() => { window.open(`https://wa.me/917978043449?text=${msg}`, '_blank'); }, 600);
+      // Reset form
+      document.getElementById('f-name').value = '';
+      document.getElementById('f-phone').value = '';
+      document.getElementById('f-service').value = '';
+      if (document.getElementById('f-msg')) document.getElementById('f-msg').value = '';
+    } else {
+      alert('Something went wrong. Please try again or call us directly at 7978043449.');
+      btn.disabled = false;
+      btn.textContent = 'Submit Enquiry';
+      return;
+    }
+  } catch (err) {
+    alert('Network error. Please try again or call us at 7978043449.');
+    btn.disabled = false;
+    btn.textContent = 'Submit Enquiry';
+    return;
+  }
+
   // Google Ads conversion tracking (replace AW-XXXXXXXX/XXXXXXXXX with your conversion ID)
   if (typeof gtag !== 'undefined') {
     gtag('event', 'conversion', { 'send_to': 'AW-XXXXXXXX/XXXXXXXXX' });
   }
+
+  btn.textContent = 'Submitted ✓';
 }
 </script>
 </body>
