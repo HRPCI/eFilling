@@ -22,14 +22,13 @@
 
 <link rel="stylesheet" href="/style.css">
 
-<!-- Google tag (gtag.js) placeholder for Google Ads -->
-<!-- Replace G-XXXXXXXXXX with your actual Google Tag ID -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<!-- Google tag (gtag.js) for Google Ads -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18253676245"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
+  gtag('config', 'AW-18253676245');
 </script>
 <style>
   :root {
@@ -1406,6 +1405,18 @@ async function submitForm() {
     });
   }
 })();
+</script>
+<script>
+// ── GOOGLE ADS CONVERSION TRACKING ──
+// This page load = a completed application, so fire the conversion here.
+// TODO: replace REPLACE_WITH_CONVERSION_LABEL with the label Google gives you
+// when you create the "Submit lead form" conversion action in
+// Tools & Settings → Conversions (Google Ads). It looks like: AbC-D1efGhIjK2LmNoP
+if (typeof gtag !== 'undefined') {
+  gtag('event', 'conversion', {
+    'send_to': 'AW-18253676245/REPLACE_WITH_CONVERSION_LABEL'
+  });
+}
 </script>
 </body>
 </html>
