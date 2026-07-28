@@ -652,18 +652,52 @@
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .submit-btn {
     width: 100%;
-    background: var(--navy);
+    background: linear-gradient(135deg, var(--blue) 0%, var(--navy) 100%);
     color: var(--white);
-    padding: 14px;
+    padding: 17px 24px;
     border: none;
-    border-radius: 10px;
-    font-size: 15.5px;
-    font-weight: 600;
+    border-radius: 12px;
+    font-size: 16.5px;
+    font-weight: 700;
     font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.01em;
     cursor: pointer;
-    transition: background 0.18s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 8px 22px rgba(21,101,192,0.32), 0 3px 8px rgba(10,35,66,0.22);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+    animation: submitBtnPulse 2.8s ease-in-out infinite;
   }
-  .submit-btn:hover { background: var(--blue); }
+  .submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.32), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.65s ease;
+  }
+  .submit-btn:hover {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(21,101,192,0.42), 0 5px 14px rgba(10,35,66,0.3);
+    animation-play-state: paused;
+  }
+  .submit-btn:hover::before { left: 130%; }
+  .submit-btn:active { transform: translateY(-1px); }
+  .submit-btn .btn-arrow { transition: transform 0.25s ease; display: inline-block; }
+  .submit-btn:hover .btn-arrow { transform: translateX(5px); }
+  @keyframes submitBtnPulse {
+    0%, 100% { box-shadow: 0 8px 22px rgba(21,101,192,0.32), 0 0 0 0 rgba(184,134,11,0.35); }
+    50% { box-shadow: 0 8px 22px rgba(21,101,192,0.32), 0 0 0 9px rgba(184,134,11,0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .submit-btn { animation: none; }
+  }
   .form-success {
     display: none;
     background: rgba(22,163,74,0.08);
@@ -784,7 +818,9 @@
   @media (max-width: 900px) {
     .hero-inner { grid-template-columns: 1fr; gap: 36px; }
     .hero-card { display: none; }
-    .contact-grid { grid-template-columns: 1fr; }
+    .contact-grid { display: flex; flex-direction: column; }
+    .contact-col-form { order: -1; }
+    .contact-col-info { order: 2; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 600px) {
@@ -1102,10 +1138,9 @@ nav a { padding: 7px 11px; font-size: 13.5px; }
       <a href="index.html">Home</a>
       <a href="gst.html" class="active">GST Registration</a>
       <a href="pan.html">PAN Card</a>
-      <a href="business-registration.html" style="font-size:13.5px;">Business Registration</a>
-      <a href="passport.html">Passport Services</a>
+      <a href="business-registration.html">Business Registration</a>
       <a href="contact.html">Contact</a>
-      <a href="contact.html" class="nav-cta">Get Started →</a>
+      <a href="gst-apply.html" class="nav-cta">Get Started →</a>
     </nav>
     <button class="mobile-menu-btn" onclick="openMobileNav()" aria-label="Menu">☰</button>
   </div>
@@ -1118,9 +1153,8 @@ nav a { padding: 7px 11px; font-size: 13.5px; }
   <a href="gst.html">GST Registration</a>
   <a href="pan.html">PAN Card</a>
   <a href="business-registration.html">Business Registration</a>
-  <a href="passport.html">Passport Services</a>
   <a href="contact.html">Contact Us</a>
-  <a href="contact.html" class="mob-cta">Get Started →</a>
+  <a href="gst-apply.html" class="mob-cta">Get Started →</a>
 </div>
 
 
@@ -1136,7 +1170,7 @@ nav a { padding: 7px 11px; font-size: 13.5px; }
   <div class="container">
     <div class="contact-grid">
 
-      <div>
+      <div class="contact-col-info">
         <div class="contact-info-card">
           <h2>GST Registration — What You Get</h2>
           <p>A simple, guided process to get your GSTIN, handled entirely by our team.</p>
@@ -1188,7 +1222,7 @@ nav a { padding: 7px 11px; font-size: 13.5px; }
         </div>
       </div>
 
-      <div>
+      <div class="contact-col-form">
         <div class="contact-form-card">
           <h2>GST Application Form</h2>
           <p>All fields marked * are required. Document upload happens later via WhatsApp/email — no need to attach anything here.</p>
@@ -1197,7 +1231,7 @@ nav a { padding: 7px 11px; font-size: 13.5px; }
             <input type="hidden" name="_subject" value="New GST Registration Application - e-filling.in">
             <input type="hidden" name="_template" value="table">
             <input type="hidden" name="_captcha" value="false">
-            <input type="hidden" name="_next" value="https://e-filling.in/thank-you.html?service=GST">
+            <input type="hidden" name="_next" value="https://payments.cashfree.com/forms/egst">
 
           <div class="form-row">
             <div class="form-group">
@@ -1261,8 +1295,8 @@ nav a { padding: 7px 11px; font-size: 13.5px; }
             <textarea name="Message" placeholder="E.g. already have PAN/Aadhaar ready, urgent requirement, existing turnover, etc."></textarea>
           </div>
 
-          <button type="submit" class="submit-btn">Submit GST Application →</button>
-          <p style="font-size:12px; color:var(--gray-500); margin-top:14px; line-height:1.6;">By submitting, you agree to be contacted by our team via call/WhatsApp/email regarding your GST registration. Government fee is ₹0; our e-filling fee of ₹990 will be confirmed before any payment is collected.</p>
+          <button type="submit" class="submit-btn"> Submit &amp; Proceed to Payment <span class="btn-arrow">→</span></button>
+          <p style="font-size:12px; color:var(--gray-500); margin-top:14px; line-height:1.6;">By submitting, you agree to be contacted by our team via call/WhatsApp/email regarding your GST registration. Government fee is ₹0. After submitting, you'll be taken to our secure payment page to pay the e-filling fee of ₹990.</p>
 
           </form>
         </div>
