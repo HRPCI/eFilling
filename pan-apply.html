@@ -1207,8 +1207,11 @@ nav a { padding: 7px 11px; font-size: 13.5px; }
           <h2>PAN Application Form</h2>
           <p>All fields marked * are required. After submitting, you'll be taken to our secure payment page to pay the ₹507 all-inclusive fee. Document upload happens later via WhatsApp/email.</p>
 
-          <form id="panApplyForm">
-            <div id="panFormError" style="display:none; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:10px 14px; border-radius:8px; font-size:13.5px; margin-bottom:16px;"></div>
+          <form action="https://formsubmit.co/contact@e-filling.in" method="POST">
+            <input type="hidden" name="_subject" value="New PAN Card Application - e-filling.in">
+            <input type="hidden" name="_template" value="table">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_next" value="https://payments.cashfree.com/forms/epan">
 
           <div class="form-row">
             <div class="form-group">
@@ -1427,72 +1430,6 @@ async function submitForm() {
   }
 
   btn.textContent = 'Submitted ✓';
-}
-
-// ── PAN APPLICATION FORM → payment link ──
-const panForm = document.getElementById('panApplyForm');
-if (panForm) {
-  panForm.addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    const errorBox = document.getElementById('panFormError');
-    errorBox.style.display = 'none';
-
-    const get = (fieldName) => {
-      const el = panForm.querySelector(`[name="${fieldName}"]`);
-      return el ? el.value.trim() : '';
-    };
-
-    const name = get('Name');
-    const phone = get('Phone');
-
-    if (!name || !phone) {
-      errorBox.textContent = 'Please fill in your name and mobile number.';
-      errorBox.style.display = 'block';
-      return;
-    }
-
-    const submitBtn = panForm.querySelector('.submit-btn');
-    const originalLabel = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Please wait…';
-
-    const payload = {
-      name: name,
-      phone: phone,
-      email: get('Email'),
-      service_type: get('PAN Service Type'),
-      applying_as: get('Applying As'),
-      dob: get('Date of Birth'),
-      city: get('City/State'),
-      notes: get('Message'),
-    };
-
-    try {
-      const res = await fetch('/api/create-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-
-      if (!res.ok || !data.link_url) {
-        throw new Error(data.error || 'Something went wrong.');
-      }
-
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'conversion', { 'send_to': 'AW-18253676245/5aCvCLnc1dEcENX9g4BE' });
-      }
-
-      window.location.href = data.link_url;
-    } catch (err) {
-      console.error(err);
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalLabel;
-      errorBox.textContent = 'We could not start your payment. Please try again, or WhatsApp us on 7978043449.';
-      errorBox.style.display = 'block';
-    }
-  });
 }
 
 </script>
